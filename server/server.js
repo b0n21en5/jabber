@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -16,6 +17,10 @@ mongoose
   .catch((err) => {
     console.log(er.message);
   });
+
+// routes
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
 // middlewares
 app.use(cors());
