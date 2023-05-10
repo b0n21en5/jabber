@@ -17,15 +17,15 @@ export default function Register() {
   });
 
   const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
+    position: "top-right",
+    autoClose: 5000,
     pauseOnHover: true,
     draggable: true,
     theme: "dark",
   };
 
   useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+    if (localStorage.getItem("chat-app-user")) {
       navigate("/");
     }
   }, []);
@@ -34,7 +34,28 @@ export default function Register() {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleValidation = () => {};
+  const handleValidation = () => {
+    const { username, email, password, confirmPassword } = values;
+
+    if (password !== confirmPassword) {
+      toast.error("Password and Confirm Password must be same", toastOptions);
+      return false;
+    } else if (username.length < 3) {
+      toast.error("Username should be greater than 3 characters", toastOptions);
+      return false;
+    } else if (password.length < 8) {
+      toast.error(
+        "Password should be equal or greater than 8 characters",
+        toastOptions
+      );
+      return false;
+    } else if (email === "") {
+      toast.error("Email is required", toastOptions);
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,10 +68,7 @@ export default function Register() {
       });
 
       if (data.status) {
-        localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
+        localStorage.setItem("chat-app-user", JSON.stringify(data.user));
         navigate("/");
       } else {
         toast.error(data.msg, toastOptions);
@@ -96,6 +114,7 @@ export default function Register() {
           </span>
         </form>
       </FormContainer>
+      <ToastContainer />
     </>
   );
 }
